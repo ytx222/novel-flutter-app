@@ -1,0 +1,68 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ytx222.novel_app">
+	<!-- 权限配置 -->
+	<!-- 网络权限,可给可不给 -->
+	<uses-permission android:name="android.permission.INTERNET" />
+    <!-- 文件权限 写外部存储器 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<!-- 保存屏幕常亮 -->
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<!-- FIXME: android:requestLegacyExternalStorage 这个是临时加的,用于读取权限bug修复 -->
+
+   <application
+    	android:requestLegacyExternalStorage="true"
+        android:label="novel_app"
+        android:icon="@mipmap/icon">
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+			<!-- FIXME: 这个写到下面?? -->
+			<!-- 全面屏适配 -->
+			<meta-data android:name="android.notch_support" android:value="true"/>
+			<!--适配小米（xiaomi）刘海屏-->
+    		<meta-data android:name="notch.config" android:value="portrait|landscape" />
+			<!-- 不知道是啥 -->
+			<meta-data android:name="android.max_aspect" android:value="2.4" />
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <!-- Displays an Android View that continues showing the launch screen
+                 Drawable until Flutter paints its first frame, then this splash
+                 screen fades out. A splash screen is useful to avoid any visual
+                 gap between the end of Android's launch screen and the painting of
+                 Flutter's first frame. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.SplashScreenDrawable"
+              android:resource="@drawable/launch_background"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+        <!-- 在MainActivity中需要监听以下 -->
+       <receiver
+           android:name=".MainActivity">
+           <intent-filter>
+               <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+               <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+           </intent-filter>
+       </receiver>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+</manifest>

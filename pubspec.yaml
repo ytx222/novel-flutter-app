@@ -1,0 +1,111 @@
+name: novel_app
+description: 自己用的小说阅读app
+
+# 是否需要发布
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+    sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+    flutter:
+        sdk: flutter
+
+    # 弹窗组件
+    bot_toast: ^4.0.1
+    # 状态管理
+    provider: ^5.0.0
+    # 屏幕自适应
+    flutter_screenutil: ^5.0.0+2
+    # 一个计算文件大小的插件
+    # TODO:没有升级空安全 所以把他的代码复制到util里面了
+    #filesize: ^1.0.4
+    # 一个获取文件路径的插件
+    # path_provider: ^1.6.27
+    # 一个检查权限和权限申请的包
+    permission_handler: ^7.1.0
+    # 格式化时间
+    date_format: ^2.0.2
+
+    # 数据缓存框架,可以实时保存
+    mmkv: ">=1.2.9"
+    # 编码格式转换
+    charset_converter: ^2.0.0
+    # 检测编码格式
+    flutter_charset_detector: ^1.0.1
+    #TODO: 旧的不支持空安全,使用rc
+    # fast_gbk: ^0.1.2+1
+    fast_gbk: ^1.0.0-rc
+    # TODO:不支持
+    gbk2utf8: ^1.0.1
+    # 保持屏幕常亮,这个版本暂时不能升级了,升级了的话会和mmkv依赖冲突(ffi)
+    #wakelock: ^0.4.0
+    wakelock: ^0.5.1
+    # json序列化
+    json_annotation: ^4.0.1
+    # 升级到空安全之后自动加的
+    collection: ^1.15.0-nullsafety.4
+    # 颜色选择器
+    flutter_colorpicker: ^0.4.0
+    # 滚动条
+    # draggable_scrollbar: ^0.1.0
+
+dev_dependencies:
+    flutter_test:
+      sdk: flutter
+    build_runner: ^1.0.0
+    json_serializable: ^4.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+    # The following line ensures that the Material Icons font is
+    # included with your application, so that you can use the icons in
+    # the material Icons class.
+    uses-material-design: true
+
+    # To add assets to your application, add an assets section, like this:
+    assets:
+        - assets/fish.png
+    # An image asset can refer to one or more resolution-specific "variants", see
+    # https://flutter.dev/assets-and-images/#resolution-aware.
+
+    # For details regarding adding assets from package dependencies, see
+    # https://flutter.dev/assets-and-images/#from-packages
+
+    # To add custom fonts to your application, add a fonts section here,
+    # in this "flutter" section. Each entry in this list should have a
+    # "family" key with the font family name, and a "fonts" key with a
+    # list giving the asset and other descriptors for the font. For
+    # example:
+    fonts:
+      - family: iconfont
+        fonts:
+          - asset: assets\font\iconfont.ttf
+      - family: 方正悠黑
+        fonts:
+          - asset: assets\font\方正悠黑简体.ttf
+
+
+      # - family: Trajan Pro
+    #     fonts:
+    #       - asset: fonts/TrajanPro.ttf
+    #       - asset: fonts/TrajanPro_Bold.ttf
+    #         weight: 700
+    #
+    # For details regarding fonts from package dependencies,
+    # see https://flutter.dev/custom-fonts/#from-packages
