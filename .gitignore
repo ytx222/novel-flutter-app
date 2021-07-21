@@ -11,6 +11,7 @@
 .vscode/
 
 README.md
+local_README.md
 
 # IntelliJ related
 *.iml
