@@ -9,6 +9,7 @@ import 'package:novel_app/pages/reader/menu/reader_menu_font_setting.dart';
 import 'package:novel_app/pages/reader/menu/reader_menu_layout_setting.dart';
 import 'package:novel_app/pages/reader/menu/reader_menu_setting_list.dart';
 import 'package:novel_app/pages/reader/menu/reader_menu_turn_animation_setting.dart';
+import 'package:novel_app/provider/books_model.dart';
 import 'package:novel_app/provider/reader_data_model.dart';
 import 'package:novel_app/util/native_api.dart';
 import 'package:novel_app/util/util.dart';
@@ -100,6 +101,9 @@ class ReaderMenuState extends State<ReaderMenu> {
   /// 阅读数据
   ReaderDataModel? readerData;
 
+  /// 书架数据
+  BooksModel? booksModel;
+
   @override
   void initState() {
     super.initState();
@@ -114,6 +118,7 @@ class ReaderMenuState extends State<ReaderMenu> {
   @override
   Widget build(BuildContext context) {
     readerData = Provider.of<ReaderDataModel>(context);
+    booksModel = Provider.of<BooksModel>(context);
 
     Widget curType;
     switch (showType) {
@@ -214,11 +219,23 @@ class ReaderMenuState extends State<ReaderMenu> {
               children: [
                 Container(
                   // color: Color(0xFF522121),
-                  child: _btn(0xe60b, iconSize: 50.w, onPressed: () {
-                    print("跳转===========");
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/bookrack', (route) => false);
-                  }),
+                  child: _btn(
+                    const IconData(0xe60b, fontFamily: "iconfont"),
+                    iconSize: 50.w,
+                    onPressed: () {
+                      print("跳转===========");
+                      // 先保存
+                      booksModel!.saveReaderRecord(readerData!);
+
+                      // 然后删除readerData的数据
+                      readerData!.reset();
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/bookrack',
+                        (route) => false,
+                      );
+                    },
+                  ),
                 ),
                 Expanded(
                   child: Container(
@@ -244,12 +261,20 @@ class ReaderMenuState extends State<ReaderMenu> {
                     ),
                   ),
                 ),
-                _btn(0xe60c, iconSize: 46.w, onPressed: () {
-                  print("听书");
-                }),
-                _btn(0xe687, iconSize: 40.w, onPressed: () {
-                  print("选项");
-                }),
+                _btn(
+                  const IconData(0xe60c, fontFamily: "iconfont"),
+                  iconSize: 46.w,
+                  onPressed: () {
+                    print("听书");
+                  },
+                ),
+                _btn(
+                  const IconData(0xe687, fontFamily: "iconfont"),
+                  iconSize: 40.w,
+                  onPressed: () {
+                    print("选项");
+                  },
+                ),
               ],
             ),
           ),
@@ -319,25 +344,45 @@ class ReaderMenuState extends State<ReaderMenu> {
               child: Row(
                 children: [
                   Expanded(
-                    child: _btn(0xe615, size: 17.vw, text: "章节", onPressed: () {
-                      setState(() => showType = MenuShowType.chapterList);
-                    }),
+                    child: _btn(
+                      const IconData(0xe615, fontFamily: "iconfont"),
+                      size: 17.vw,
+                      text: "章节",
+                      onPressed: () {
+                        setState(() => showType = MenuShowType.chapterList);
+                      },
+                    ),
                   ),
                   Expanded(
-                    child: _btn(0xe61d, size: 17.vw, text: "字体", onPressed: () {
-                      setState(() => showType = MenuShowType.font);
-                    }),
+                    child: _btn(
+                      const IconData(0xe61d, fontFamily: "iconfont"),
+                      size: 17.vw,
+                      text: "字体",
+                      onPressed: () {
+                        setState(() => showType = MenuShowType.font);
+                      },
+                    ),
                   ),
                   Expanded(
-                    child: _btn(0xe6b9, size: 17.vw, text: "横屏", onPressed: () {
-                      print("横屏");
-                      NovelUtil.msg('暂不支持');
-                    }),
+                    child: _btn(
+                      const IconData(0xe6b9, fontFamily: "iconfont"),
+                      size: 17.vw,
+                      text: "横屏",
+                      onPressed: () {
+                        print("横屏");
+                        NovelUtil.msg('暂不支持');
+                      },
+                    ),
                   ),
                   Expanded(
-                    child: _btn(0xe67a, size: 17.vw, text: "设置", onPressed: () {
-                      setState(() => showType = MenuShowType.setting);
-                    }),
+                    child: _btn(
+                      const IconData(0xe67a, fontFamily: "iconfont"),
+                      size: 17.vw,
+                      text: "设置",
+                      onPressed: () {
+                        setState(() => showType = MenuShowType.setting);
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -349,7 +394,7 @@ class ReaderMenuState extends State<ReaderMenu> {
   }
 
   Widget _btn(
-    int codePoint, {
+    IconData iconData, {
     VoidCallback? onPressed,
     String? text,
     double size = 50,
@@ -372,7 +417,8 @@ class ReaderMenuState extends State<ReaderMenu> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
-                  IconData(codePoint, fontFamily: "iconfont"),
+                  iconData,
+                  // IconData(codePoint, fontFamily: "iconfont"),
                   color: Color(0xFFDDDDDD),
                   size: iconSize,
                 ),

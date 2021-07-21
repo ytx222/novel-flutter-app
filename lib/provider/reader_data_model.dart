@@ -40,29 +40,38 @@ class ReaderDataModel extends SaveChangeNotifier {
   /// 书的文本内容
   static String? txt;
 
+  /// 加载失败有两种情况,一种是失败,一种是返回了,然后执行了请空数据
+  bool isReturn = false;
+
   /// 初始化
   @override
   Future<Book?> init([parm]) async {
+    isReturn = false;
     // 当前逻辑上可能有什么不准确的地方,以至于在初始化未完成的时候initEnd = true,所以这里先设置成false
     initEnd = false;
-    // return false;
     // 如果book为null,则认定为恢复模式
-    // FIXME: 刚写的,可能有bug
     try {
       if (parm == null) {
         this.book = await read();
-        // 异步的读取内容
-        _initChapterList().then((value) => null);
+        if (this.book != null) {
+          // 异步的读取内容
+          _initChapterList().then((e) {});
+        }
       } else {
         // 如果book不是null,则是主动打开这本书的
         this.book = parm;
-        this.chapterIndex = 0;
+        this.chapterIndex = parm.chapterIndex ?? 0;
+
+        /// chapterContent改不改应该都一样
         this.chapterContent = [null, null, null];
-        this.page = 0;
         await _initChapterList();
-        this.setChapter(0);
+        this.setChapter(this.chapterIndex, false);
+        // 因为setChapter会修改 page,所以要在这里修改 page
+        this.page = parm.pageIndex ?? 0;
         // 手动打开的这本书,则保存一下
-        save(isAll: true);
+        // 同时要调用 notifyListeners 因为截止到现在没有调用过,
+        // 这里如果不调用,则无法通知监听model的已经加载完成了
+        saveChange(isAll: true);
       }
     } catch (e) {
       print("初始化失败,错误");
@@ -83,6 +92,7 @@ class ReaderDataModel extends SaveChangeNotifier {
     if (data.isEmpty) {
       // 如果获取到了空数据,说明被人为删除了,所以返回false初始化失败
       _chapterList = [];
+      isReturn = true;
       return null;
     } else {
       try {
@@ -106,10 +116,18 @@ class ReaderDataModel extends SaveChangeNotifier {
     }
   }
 
+  /// 执行notifyListeners并保存修改到mmkv
+  void saveChange({
+    bool isAll = false,
+  }) {
+    notifyListeners(); //2
+    save(isAll: isAll);
+  }
+
   /// 保存对象数据到mmkv
   void save({
     /// 是否保存所有数据(包括章节列表)
-    isAll = false,
+    bool isAll = false,
   }) {
     // print("save开始");
     var s = toString(false);
@@ -147,6 +165,22 @@ class ReaderDataModel extends SaveChangeNotifier {
       }
       return Chapter.fromReaderDataJson(e);
     }).toList();
+  }
+
+  /// 保存可以保存到book的信息,并将book返回,用于退出阅读页面时保存进度
+  Book? saveAsBook() {
+    try {
+      Book b = book!;
+      b.lastReaderTime = DateTime.now();
+      b.chapterIndex = chapterIndex;
+      b.chapterLength = chapterLength;
+      b.lastChapterName = curPage.chapter.name;
+      b.pageIndex = page;
+      // FIXME: 自定义正则,还没做
+      return b;
+    } catch (e) {
+      return null;
+    }
   }
 
   /// 保存当前章节的文本内容
@@ -399,8 +433,6 @@ class ReaderDataModel extends SaveChangeNotifier {
       ], 0, Chapter('404', 0, 0));
     }
   }
-
-
 
   // 这个是完全的运行时数据,不需要保存
   /// 系统电量,只显示

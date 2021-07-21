@@ -13,6 +13,7 @@ class ReaderItemSystemInfo extends StatefulWidget {
     Key? key,
     required this.style,
   }) : super(key: key) {
+    /// FIXME: 增加秒设置项
     ReaderItemSystemInfo.date = NovelUtil.date.toTime(sec: false);
     t?.cancel();
     t = Timer.periodic(Duration(seconds: 1), (t) {

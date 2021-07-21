@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:novel_app/class/book.dart';
+import 'package:novel_app/provider/reader_data_model.dart';
 import 'package:novel_app/util/util.dart';
 
 const String booksKey = "books";
@@ -43,6 +44,21 @@ class BooksModel with ChangeNotifier {
         })
         .toList()
         .toString());
+  }
+
+  /// 保存阅读记录
+  ///
+  void saveReaderRecord(ReaderDataModel model) {
+    // 调用保存
+    var book = model.saveAsBook();
+    print(book);
+    if (book != null) {
+      /// 修改书架顺序为第一,然后保存书架
+      // 这里不需要判断是否删除成功,因为book重载了运算符,只要关键信息相等就认为是同一本书
+      list.remove(book);
+      list.insert(0, book);
+      save();
+    }
   }
 
   /// 转换为List<Map<String, dynamic>>格式,用于json格式化

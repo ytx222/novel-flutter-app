@@ -53,6 +53,9 @@ class HorizontalTurnAnimationPageState extends BaseAnimationPageState {
   /// 动画结束后要跳转的页面,当前支持 1下一页  -1上一页
   int newPageNum = 0;
 
+  /// 用于检查性能
+  int frames = 0;
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +65,9 @@ class HorizontalTurnAnimationPageState extends BaseAnimationPageState {
         animationEnd(status);
       }
     });
+    // controller!.addListener(() {
+    //   // frames++;
+    // });
   }
 
   /// 重新初始化页面
@@ -152,13 +158,14 @@ class HorizontalTurnAnimationPageState extends BaseAnimationPageState {
 
   /// 开始执行动画
   void startAnimation([bool reverse = false]) {
-
     isAnimation = true;
+    frames = 0;
   }
 
   void resetAnimation() {
     print('resetAnimation');
     controller?.reset();
+    frames = 0;
   }
 
   /// 动画结束的回调

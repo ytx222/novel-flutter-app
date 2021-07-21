@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_app/pages/reader/animation/bese_animation_page.dart';
 import 'package:novel_app/pages/reader/widget/reader_gesture_discern.dart';
 import 'package:novel_app/provider/reader_data_model.dart';
+import 'package:novel_app/provider/reader_setting_model.dart';
 import 'package:novel_app/util/utils_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +42,9 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
   /// 初始化
   SimulationAnimationPageState();
 
+  /// 设置,这里只有背景颜色需要用到
+  late ReaderSettingModel setting;
+
   /// 动画对应起始点
   Anchor anchor = Anchor.center;
   Offset get anchorOffset {
@@ -71,6 +75,7 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
   @override
   void initState() {
     super.initState();
+    baseDuration = Duration(milliseconds: 500*5);
   }
 
   /// 屏幕大小
@@ -82,25 +87,28 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
   @override
   Widget build(BuildContext context) {
     readerData ??= Provider.of<ReaderDataModel>(context);
+    setting = Provider.of<ReaderSettingModel>(context);
 
     checkPageUpdate();
+    var pasgs = <Widget>[];
+    // 默认,none 显示当前页
+    if (changeType == PageChageType.none) {
+      pasgs.add(defaultContainer(curPageWidget));
+    } else if (changeType == PageChageType.next) {
+      pasgs.add(subContainer(nextPageWidget));
+      pasgs.add(supContainer(curPageWidget));
+    } else if (changeType == PageChageType.prev) {
+      pasgs.add(subContainer(curPageWidget));
+      pasgs.add(supContainer(prevPageWidget));
+    }
+
     return Container(
       width: screenSize.width,
       height: screenSize.height,
       color: Color(0xFF212A47),
       child: Stack(
         // clipBehavior: Clip.hardEdge,
-        children: [
-          // 默认,none 显示当前页
-          if (changeType == PageChageType.none) defaultContainer(curPageWidget),
-          // supContainer(curPageWidget),
-          // 下一页时,渲染两页,当前页和下一页,下一页在下层
-          if (changeType == PageChageType.next) subContainer(nextPageWidget),
-          if (changeType == PageChageType.next) supContainer(curPageWidget),
-          // 上一页时,渲染上一页和当前页,当前页在下层
-          if (changeType == PageChageType.prev) subContainer(curPageWidget),
-          if (changeType == PageChageType.prev) supContainer(prevPageWidget),
-        ],
+        children: pasgs,
       ),
     );
   }
@@ -154,9 +162,7 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
   }
 
   Widget subContainer(Widget child) {
-    return Container(
-      color: Color(0xFFFFFFFF),
-    );
+    // return Container(color: Color(0xFFFFFFFF));
     return Container(
       width: screenSize.width,
       height: screenSize.height,
@@ -164,9 +170,35 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
     );
   }
 
+  Widget? reversePage;
+
   Widget supContainer(Widget child) {
-    Matrix4 m2 = Matrix4.translationValues(screenSize.width, 0, 0);
-    m2.rotateY(pi);
+    if (reversePage == null) {
+      Matrix4 m2 = Matrix4.translationValues(screenSize.width, 0, 0);
+      m2.rotateY(pi);
+      reversePage = Transform(
+        transform: m2,
+        // 这里负责页面边缘的阴影效果,为了配合这个阴影
+        // 在ClipPath增加了间距
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x99000000),
+                spreadRadius: 0,
+                blurRadius: 30.w,
+              )
+            ],
+            color: setting.backgroundColor,
+          ),
+          // 背面需要有一定的不透明度,否则看起来和正面差距不大
+          child: Opacity(
+            opacity: 0.5,
+            child: child,
+          ),
+        ),
+      );
+    }
 
     double _deg = 0;
     double? supTop = null;
@@ -198,10 +230,9 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
               supTop: supTop,
               supBottom: supBottom,
               m1: m1,
-              m2: m2,
               deg: _deg,
               alignment: alignment,
-              page: child,
+              page: reversePage!,
             ),
             Center(
               child: Container(
@@ -227,6 +258,8 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
     return AnimatedBuilder(
       animation: controller!,
       builder: (BuildContext context, Widget? child2) {
+        frames++;
+
         var v = controller!.value;
         var diff = animationEndDot - animationStartDot;
         var newCur = animationStartDot + diff * v;
@@ -237,39 +270,24 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
           _deg = pi - deg2 * 2;
         }
         m1 = Matrix4.rotationZ(_deg);
-
-        print(newCur);
+        // 根据动画运行到的点,重新计算
         calcLine(newCur);
 
-        return Positioned.fill(
-          child: Stack(
-            children: [
-              subClipPage(topDot: topDot, bottomDot: bottomDot, page: child),
-              // 定位
-              supClipPage(
-                topDot: topDot,
-                bottomDot: bottomDot,
-                supTop: supTop,
-                supBottom: supBottom,
-                m1: m1,
-                m2: m2,
-                deg: _deg,
-                alignment: alignment,
-                page: child,
-              ),
-              Center(
-                child: Container(
-                  color: Color(0xEE5EEE32),
-                  padding: EdgeInsets.all(10),
-                  child: Text("$cur"),
-                ),
-              ),
-              testDot(topDot),
-              testDot(bottomDot),
-              testDot(cur),
-              testDot(center, Color(0xFFFF00F2)),
-            ],
-          ),
+        return Stack(
+          children: [
+            subClipPage(topDot: topDot, bottomDot: bottomDot, page: child),
+            // 定位
+            supClipPage(
+              topDot: topDot,
+              bottomDot: bottomDot,
+              supTop: supTop,
+              supBottom: supBottom,
+              m1: m1,
+              deg: _deg,
+              alignment: alignment,
+              page: reversePage!,
+            ),
+          ],
         );
       },
     );
@@ -284,15 +302,6 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
     return ClipPath(
       clipper: SubClip(topDot, bottomDot),
       child: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Color(0x99000000),
-              spreadRadius: 0,
-              blurRadius: 30.w,
-            )
-          ],
-        ),
         child: page,
       ),
     );
@@ -305,12 +314,10 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
     double? supTop,
     double? supBottom,
     required Matrix4 m1,
-    required Matrix4 m2,
     required double deg,
     required Alignment alignment,
     required Widget page,
   }) {
-    // return Container();
     return Positioned(
       top: supTop,
       bottom: supBottom,
@@ -323,8 +330,6 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
           // 控制大小,内部包含Stack,然后溢出隐藏
           width: clipRestSize.width,
           height: clipRestSize.height,
-          decoration: BoxDecoration(),
-          // clipBehavior: Clip.antiAlias,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -335,24 +340,9 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
                 child: Container(
                   width: screenSize.width,
                   height: screenSize.height,
-                  // color: Color(0x66000000),
                   child: ClipPath(
                     clipper: SupClip(topDot, bottomDot),
-                    child: Transform(
-                      transform: m2,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0x99000000),
-                              spreadRadius: 0,
-                              blurRadius: 30.w,
-                            )
-                          ],
-                        ),
-                        child: page,
-                      ),
-                    ),
+                    child: page,
                   ),
                 ),
               ),
@@ -365,7 +355,7 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
 
   Widget testDot(Offset offset, [Color c = const Color(0xFFFF0000)]) {
     var size = 40.w;
-    // return Container();
+    return Container();
     return Positioned(
       left: offset.dx - size * 1.5,
       top: offset.dy - size * 1.5,
@@ -392,16 +382,51 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
 
   @override
   bool onTap(ReaderGestureData data) {
-    return super.onTap(data);
+    controller?.reset();
+    // 先执行
+    var n = (data.start.dx / screenSize.width * 3).floor();
+    // 点击中间区域,则打开菜单
+    if (n == 1) {
+      return false;
+    }
+    // 初始化开始锚点
+    // 中间40%,计算为中间,上下30%计算为上下
+    cur = data.start;
+    // 点击左右则
+    if (n == 2) {
+      changeType = PageChageType.next;
+      // 只有下一页时才有多个锚点,
+      var y = data.start.dy;
+      var v = y / screenSize.height;
+      if (v < 0.3) {
+        anchor = Anchor.top;
+      } else if (v > 0.7) {
+        anchor = Anchor.bottom;
+      } else {
+        anchor = Anchor.center;
+      }
+      nextPage(false);
+    } else {
+      changeType = PageChageType.prev;
+      anchor = Anchor.center;
+      prevPage();
+    }
+    // n = n - 1;
+    // ReaderPageContainer.globalKey?.currentState?.pageChange(n);
+    return true;
   }
 
+  ///
+  ///
   @override
   void onMove(ReaderGestureData data) {
     if (isAnimation) {
+      // return;
       resetAnimation();
     }
     // 初始化操作
     if (changeType == PageChageType.none) {
+      reversePage = null;
       // 初始化开始锚点
       // 中间40%,计算为中间,上下30%计算为上下
 
@@ -522,11 +547,13 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
       clipRestSize = Size(w - min(dot1Left, dot2Left), h - dot2Top);
     }
     print('========');
-    // print("getClip=>  top $top, bottom:$bottom");
   }
 
   @override
   void onMoveEnd(ReaderGestureData data) {
+    // if (isAnimation) {
+    //   return;
+    // }
     super.onMoveEnd(data);
   }
 
@@ -535,20 +562,34 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
 
   /// 开始执行动画
   void startAnimation([bool reverse = false]) {
+    frames = 0;
+
     print('startAnimation===============');
     // 不能将值设置成0,否则会触发结束事件
     animationStartDot = cur;
+    var restTime = 1.0;
+    var w = screenSize.width;
+    // 上一页
     if (reverse) {
-      animationEndDot = Offset(screenSize.width, screenSize.height / 2);
+      // 如果是下一页时调用相反,则说明是取消翻页,这时候锚点不能固定为中间
+      if (changeType == PageChageType.next) {
+        animationEndDot = Offset(w, anchorOffset.dy);
+      } else {
+        // 如果是上一页,则默认调用的就是reverse 这时候锚点只能为中间
+        animationEndDot = Offset(w, screenSize.height / 2);
+        // animationEndDot = Offset(w, anchorOffset.dy);
+      }
+      restTime = (w - cur.dx) / w;
     } else {
-      animationEndDot = Offset(-screenSize.width, anchorOffset.dy);
+      animationEndDot = Offset(-w, anchorOffset.dy);
+      restTime = (w + cur.dx) / (2 * w);
     }
+
+    controller!.duration = baseDuration * restTime;
     controller?.value = 0.0000000001;
     controller?.forward();
     isAnimation = true;
     setState(() {});
-    // 开始动画的代码
-    // animationEnd(AnimationStatus.completed);
   }
 
   /// 动画结束的回调
@@ -556,13 +597,20 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
   void animationEnd(AnimationStatus status) {
     super.animationEnd(status);
     setState(() {});
-    // changeType = PageChageType.next;
+    print("""动画性能统计===
+        帧:$frames,
+        时间:${controller!.duration!.inMilliseconds}
+        FPS: ${frames / controller!.duration!.inMilliseconds * 1000}
+        """);
   }
 
   @override
-  void nextPage() {
-    print("仿真动画 => nextPage");
-    // offset = 1;
+  void nextPage([isAnchorCenter = true]) {
+    if (isAnchorCenter) {
+      changeType = PageChageType.next;
+      anchor = Anchor.center;
+      cur = anchorOffset;
+    }
     super.nextPage();
   }
 
@@ -570,6 +618,9 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
   void prevPage() {
     print("仿真动画 => prevPage");
     //  offset = screenSize.width - 1;
+    changeType = PageChageType.prev;
+    anchor = Anchor.center;
+    cur = Offset(-screenSize.width, screenSize.height / 2);
     super.prevPage();
   }
 }

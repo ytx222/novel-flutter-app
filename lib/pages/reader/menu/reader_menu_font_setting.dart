@@ -24,14 +24,18 @@ class _ReaderMenuFontSettingState extends State<ReaderMenuFontSetting> {
   ///
   ReaderDataModel? data;
 
-
-
   @override
   Widget build(BuildContext context) {
-    final int iconFontAdd = 0xe689;
-    final int iconFontReduce = 0xe6c4;
-    final int iconAdd = 0xe663;
-    final int iconReduce = 0xe6f7;
+    // final int iconFontAdd = 0xe689;
+    // final int iconFontReduce = 0xe6c4;
+    // final int iconAdd = 0xe663;
+    // final int iconReduce = 0xe6f7;
+
+    final IconData iconFontAdd = const IconData(0xe689, fontFamily: "iconfont");
+    final IconData iconFontReduce =
+        const IconData(0xe6c4, fontFamily: "iconfont");
+    final IconData iconAdd = const IconData(0xe663, fontFamily: "iconfont");
+    final IconData iconReduce = const IconData(0xe6f7, fontFamily: "iconfont");
     setting = Provider.of<ReaderSettingModel>(context);
     data = Provider.of<ReaderDataModel>(context);
     return ReaderMenuContainer(
@@ -44,70 +48,98 @@ class _ReaderMenuFontSettingState extends State<ReaderMenuFontSetting> {
           ),
           row([
             title('标题'),
-            sizeBtn(iconFontReduce, iconSize: 64.w, callback: () {
-              var size = setting!.fontSize - 1.w;
-              if ((size / 1.w).round() <= 10) {
-                NovelUtil.msg('不能再小了');
-              } else {
+            sizeBtn(
+              iconFontReduce,
+              iconSize: 64.w,
+              callback: () {
+                var size = setting!.titleFontSize - 1.w;
+                if ((size / 1.w).round() <= 10) {
+                  NovelUtil.msg('不能再小了');
+                } else {
+                  setting!.setTitleFontSize(size);
+                  data!.refreshChapterContent();
+                }
+              },
+            ),
+            sizeTxt(setting!.titleFontSize),
+            sizeBtn(
+              iconFontAdd,
+              iconSize: 60.w,
+              callback: () {
+                var size = setting!.titleFontSize + 1.w;
                 setting!.setTitleFontSize(size);
                 data!.refreshChapterContent();
-              }
-            }),
-            sizeTxt(setting!.titleFontSize),
-            sizeBtn(iconFontAdd, iconSize: 60.w, callback: () {
-              var size = setting!.fontSize + 1.w;
-              setting!.setTitleFontSize(size);
-              data!.refreshChapterContent();
-            }),
+              },
+            ),
           ]),
           row([
             title('正文'),
-            sizeBtn(iconFontReduce, iconSize: 64.w, callback: () {
-              var size = setting!.fontSize - 1.w;
-              if ((size / 1.w).round() <= 10) {
-                NovelUtil.msg('不能再小了');
-              } else {
+            sizeBtn(
+              iconFontReduce,
+              iconSize: 64.w,
+              callback: () {
+                var size = setting!.fontSize - 1.w;
+                if ((size / 1.w).round() <= 10) {
+                  NovelUtil.msg('不能再小了');
+                } else {
+                  setting!.setFontSize(size);
+                  data!.refreshChapterContent();
+                }
+              },
+            ),
+            sizeTxt(setting!.fontSize),
+            sizeBtn(
+              iconFontAdd,
+              iconSize: 60.w,
+              callback: () {
+                var size = setting!.fontSize + 1.w;
                 setting!.setFontSize(size);
                 data!.refreshChapterContent();
-              }
-            }),
-            sizeTxt(setting!.fontSize),
-            sizeBtn(iconFontAdd, iconSize: 60.w, callback: () {
-              var size = setting!.fontSize + 1.w;
-              setting!.setFontSize(size);
-              data!.refreshChapterContent();
-            }),
+              },
+            ),
           ]),
           row([
             title('标题行高'),
-            sizeBtn(iconReduce, iconSize: 38.w, callback: () {
-              var h = setting!.titleLineHeight - 0.1;
-              if (h < 1) {
-                NovelUtil.msg('行高不能低于1倍');
-              } else {
+            sizeBtn(
+              iconReduce,
+              iconSize: 38.w,
+              callback: () {
+                var h = setting!.titleLineHeight - 0.1;
+                if (h < 1) {
+                  NovelUtil.msg('行高不能低于1倍');
+                } else {
+                  setting!.setTitleLineHeight(h);
+                  data!.refreshChapterContent();
+                }
+              },
+            ),
+            lineHeightTxt(setting!.titleLineHeight),
+            sizeBtn(
+              iconAdd,
+              iconSize: 34.w,
+              callback: () {
+                var h = setting!.titleLineHeight + 0.1;
                 setting!.setTitleLineHeight(h);
                 data!.refreshChapterContent();
-              }
-            }),
-            lineHeightTxt(setting!.titleLineHeight),
-            sizeBtn(iconAdd, iconSize: 34.w, callback: () {
-              var h = setting!.titleLineHeight + 0.1;
-              setting!.setTitleLineHeight(h);
-              data!.refreshChapterContent();
-            }),
+              },
+            ),
           ]),
           row([
             title('正文行高'),
-            sizeBtn(iconReduce, iconSize: 34.w, callback: () {
-              var h = ((setting!.lineHeight - 0.1) * 10).floorToDouble() / 10;
-              if (h < 1) {
-                print(h);
-                NovelUtil.msg('行高不能低于1倍');
-              } else {
-                setting!.setLineHeight(h);
-                data!.refreshChapterContent();
-              }
-            }),
+            sizeBtn(
+              iconReduce,
+              iconSize: 34.w,
+              callback: () {
+                var h = ((setting!.lineHeight - 0.1) * 10).floorToDouble() / 10;
+                if (h < 1) {
+                  print(h);
+                  NovelUtil.msg('行高不能低于1倍');
+                } else {
+                  setting!.setLineHeight(h);
+                  data!.refreshChapterContent();
+                }
+              },
+            ),
             lineHeightTxt(setting!.lineHeight),
             sizeBtn(iconAdd, iconSize: 34.w, callback: () {
               var h = setting!.lineHeight + 0.1;
@@ -208,7 +240,7 @@ class _ReaderMenuFontSettingState extends State<ReaderMenuFontSetting> {
 
   /// 加减字体大小的按钮
   Widget sizeBtn(
-    int codePoint, {
+    IconData iconData, {
     required VoidCallback callback,
     double? iconSize,
   }) {
@@ -238,7 +270,7 @@ class _ReaderMenuFontSettingState extends State<ReaderMenuFontSetting> {
         alignment: Alignment.center,
         child: Container(
           child: Icon(
-            IconData(codePoint, fontFamily: "iconfont"),
+            iconData,
             color: Color(0xFFDDDDDD),
             size: _iconSize,
           ),

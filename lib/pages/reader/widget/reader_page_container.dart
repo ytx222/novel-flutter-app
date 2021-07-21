@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:novel_app/pages/reader/animation/bese_animation_page.dart';
 import 'package:novel_app/pages/reader/animation/cover_animation_page.dart';
@@ -138,13 +140,11 @@ class _ReaderPageContainerState extends State<ReaderPageContainer> {
 
   /// 下一页
   Future<void> nextPage() async {
-    // await pageChange(1);
     animationKey.currentState?.nextPage();
   }
 
   /// 上一页
   Future<void> prevPage() async {
-    // await pageChange(-1);
     animationKey.currentState?.prevPage();
   }
 
@@ -203,8 +203,19 @@ class _ReaderPageContainerState extends State<ReaderPageContainer> {
   Widget getReaderPageItems(BuildContext context) {
     // 没有加载完成时返回加载中
     if (!readerData!.initEnd) {
-      return _loading();
+      return _loading(setting);
     } else if (readerData!.book == null) {
+      if (readerData!.isReturn) {
+        Timer.periodic(Duration(microseconds: 0), (t) {
+          t.cancel();
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/bookrack',
+            (route) => false,
+          );
+        });
+        return Container();
+      }
       return _loadError(context);
     } else {
       BaseAnimationPage animationPage;
@@ -227,9 +238,12 @@ class _ReaderPageContainerState extends State<ReaderPageContainer> {
   }
 }
 
-Widget _loading() {
-  return Center(
-    child: Text("加载中..."),
+Widget _loading(ReaderSettingModel setting) {
+  return Container(
+    color: setting.backgroundColor,
+    child: Center(
+      child: Text("加载中..."),
+    ),
   );
 }
 

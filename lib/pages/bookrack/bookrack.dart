@@ -49,41 +49,68 @@ class _BookrackPageState extends State<BookrackPage> {
     // MediaQueryData a = MediaQuery.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("书架(后续隐藏箭头)"),
-      ),
+      appBar: AppBar(title: Text("书架"), actions: [
+        IconButton(
+          icon: Icon(
+            const IconData(0xe663, fontFamily: "iconfont"),
+            color: Color(0xFF666666),
+            size: 40.w,
+          ),
+          onPressed: () {
+            Navigator.pushNamed(context, "/file/selectBook");
+          },
+        ),
+        IconButton(
+          icon: Icon(
+            const IconData(0xe687, fontFamily: "iconfont"),
+            color: Color(0xFF666666),
+            size: 40.w,
+          ),
+          onPressed: () {
+            NovelUtil.alertText('暂未实现,以后可能放点设置之类的吧');
+          },
+        )
+      ]),
       body: Container(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                // color: Color(0xFF28A828),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        // color: Color(0xFF8F3E3E),
-                        child: Text("1"),
-                      ),
-                    ),
-                    Container(
-                      // color: Color(0xFF5F8BC4),
-                      height: 40.h,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/file/selectBook");
-                        },
-                        style: ButtonStyle(
-                            padding:
-                                ButtonStyleButton.allOrNull<EdgeInsetsGeometry>(
-                                    EdgeInsets.all(0))),
-                        child: Text(
-                          "选择文件",
-                          style: TextStyle(height: 1),
+              SizedBox(
+                height: 20.w,
+              ),
+              Visibility(
+                visible: false,
+                child: Container(
+                  // color: Color(0xFF28A828),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          // color: Color(0xFF8F3E3E),
+                          child: Text("1"),
                         ),
                       ),
-                    )
-                  ],
+                      Container(
+                        // color: Color(0xFF5F8BC4),
+                        height: 40.h,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/file/selectBook");
+                          },
+                          style: ButtonStyle(
+                            padding:
+                                ButtonStyleButton.allOrNull<EdgeInsetsGeometry>(
+                              EdgeInsets.all(0),
+                            ),
+                          ),
+                          child: Text(
+                            "选择文件",
+                            style: TextStyle(height: 1),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -94,7 +121,22 @@ class _BookrackPageState extends State<BookrackPage> {
                 child: Wrap(
                   children: getBooks(),
                 ),
-              )
+              ),
+              Container(
+                child: TextButton(
+                  onPressed: () {
+                    NovelUtil.alertText("""
+作者网站: ytx222.com
+github: github.com/ytx222
+本项目地址: ytx222/novel-flutter-app
+欢迎star
+另有vscode阅读插件,数独游戏(带解密)等 """,
+height: 480.w);
+                  },
+                  child: Text('作者: ytx222'),
+                ),
+              ),
+              SizedBox(height: 50.w,)
             ],
           ),
         ),
@@ -191,6 +233,8 @@ class _BookrackItem extends StatelessWidget {
       },
       onLongPress: () {
         print("长按一本书");
+        alert(context, booksModel);
+        print(book);
       },
       child: child,
     );

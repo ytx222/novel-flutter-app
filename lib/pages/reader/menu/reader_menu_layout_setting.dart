@@ -182,23 +182,29 @@ class _ReaderMenuColorLayoutngState extends State<ReaderMenuLayoutSetting> {
               ),
             ),
           ),
-          sizeBtn(0xe6f7, callback: () {
-            if (size - 1 < 0) {
-              NovelUtil.msg('不能再小了');
-              return true;
-            }
-            var newValue = 1.w * --size;
-            setTypeValue(type, newValue);
-          }),
+          sizeBtn(
+            const IconData(0xe6f7, fontFamily: "iconfont"),
+            callback: () {
+              if (size - 1 < 0) {
+                NovelUtil.msg('不能再小了');
+                return true;
+              }
+              var newValue = 1.w * --size;
+              setTypeValue(type, newValue);
+            },
+          ),
           valueText(size),
-          sizeBtn(0xe663, callback: () {
-            if (size + 1 > 240) {
-              NovelUtil.msg('间距上限为240');
-              return true;
-            }
-            var newValue = 1.w * ++size;
-            setTypeValue(type, newValue);
-          }),
+          sizeBtn(
+            const IconData(0xe663, fontFamily: "iconfont"),
+            callback: () {
+              if (size + 1 > 240) {
+                NovelUtil.msg('间距上限为240');
+                return true;
+              }
+              var newValue = 1.w * ++size;
+              setTypeValue(type, newValue);
+            },
+          ),
         ],
       ),
     );
@@ -208,7 +214,7 @@ class _ReaderMenuColorLayoutngState extends State<ReaderMenuLayoutSetting> {
 
   /// 加减字体大小的按钮
   Widget sizeBtn(
-    int codePoint, {
+    IconData iconData, {
     required SettingCallback callback,
     double? iconSize,
   }) {
@@ -242,7 +248,7 @@ class _ReaderMenuColorLayoutngState extends State<ReaderMenuLayoutSetting> {
         alignment: Alignment.center,
         child: Container(
           child: Icon(
-            IconData(codePoint, fontFamily: "iconfont"),
+            iconData,
             color: Color(0xFFDDDDDD),
             size: _iconSize,
           ),

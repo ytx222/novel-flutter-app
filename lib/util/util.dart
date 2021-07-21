@@ -107,18 +107,23 @@ class NovelUtil {
     String text, {
     TextStyle? style,
     String title = "提醒",
+     double height = 0,
     bool showCancel = true,
   }) {
     return alert(
-        title: title,
-        content: Container(
+      title: title,
+      content: SingleChildScrollView(
+              child: Container(
           padding: EdgeInsets.all(10.w),
           child: Text(
             text,
             style: style ?? TextStyle(fontSize: 32.w, color: Color(0xFF444444)),
           ),
         ),
-        showCancel: showCancel);
+      ),
+      height:height,
+      showCancel: showCancel,
+    );
   }
 
   /// 通用的title和按钮区域的高度

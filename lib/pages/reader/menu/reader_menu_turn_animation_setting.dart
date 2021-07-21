@@ -68,10 +68,22 @@ class _ReaderMenuTurnAnimationSettingState
           SizedBox(height: 20.w),
           Wrap(
             children: [
-              item(TurnAnimationType.simulation, 0xe69d),
-              item(TurnAnimationType.cover, 0xe613),
-              item(TurnAnimationType.slide, 0xe613),
-              item(TurnAnimationType.none, 0xe613),
+              item(
+                TurnAnimationType.simulation,
+                const IconData(0xe69d, fontFamily: "iconfont"),
+              ),
+              item(
+                TurnAnimationType.cover,
+                const IconData(0xe613, fontFamily: "iconfont"),
+              ),
+              item(
+                TurnAnimationType.slide,
+                const IconData(0xe613, fontFamily: "iconfont"),
+              ),
+              item(
+                TurnAnimationType.none,
+                const IconData(0xe613, fontFamily: "iconfont"),
+              ),
             ],
           ),
         ],
@@ -79,7 +91,10 @@ class _ReaderMenuTurnAnimationSettingState
     );
   }
 
-  Widget item(TurnAnimationType type, int codePoint) {
+  Widget item(
+    TurnAnimationType type,
+    IconData iconData,
+  ) {
     var _is = setting!.turnAnimationType == type;
     var color = Color(0xFFFFFFFF);
     if (_is) {
@@ -105,7 +120,7 @@ class _ReaderMenuTurnAnimationSettingState
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
-              IconData(codePoint, fontFamily: "iconfont"),
+              iconData,
               color: color,
               size: 40.w,
             ),

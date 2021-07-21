@@ -33,9 +33,10 @@ class CoverAnimationPageState extends HorizontalTurnAnimationPageState {
   @override
   void initState() {
     super.initState();
+    controller!.addListener(() {
+      frames++;
+    });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +97,6 @@ class CoverAnimationPageState extends HorizontalTurnAnimationPageState {
       );
     }
 
-
     PositionedTransition c = PositionedTransition(
       rect: animation2!,
       child: Container(
@@ -150,11 +150,15 @@ class CoverAnimationPageState extends HorizontalTurnAnimationPageState {
     super.onMoveEnd(data);
   }
 
+  int frames = 0;
+
   /// 开始执行动画
   /// 采用计算应该执行的时间的+从当前offset开始,可以避免曲线造成进度不匹配
   void startAnimation([bool reverse = false]) {
+    frames = 0;
+
     var start = offset * -1;
-    var end = -360.0 - 30.w;// 30.w是阴影距离,如果加上阴影距离,阴影消失的就不会太明显
+    var end = -360.0 - 30.w; // 30.w是阴影距离,如果加上阴影距离,阴影消失的就不会太明显
     var restTime = offset / screenSize.width;
     if (reverse) {
       end = 0;
@@ -191,6 +195,10 @@ class CoverAnimationPageState extends HorizontalTurnAnimationPageState {
     print("animationEnd============44");
     print("animationEnd============55");
     print("animationEnd============66");
+    print("""动画性能统计===
+        帧:$frames,
+        时间:${controller!.duration!.inMilliseconds}
+        FPS: ${frames / controller!.duration!.inMilliseconds * 1000} """);
     super.animationEnd(status);
     print(isAnimation);
 

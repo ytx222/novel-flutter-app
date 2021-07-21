@@ -51,7 +51,7 @@ class _ReaderPageState extends State<ReaderPage> {
   /// 页面关闭时
   dispose() {
     super.dispose();
-    readerData!.reset();
+
     Wakelock.disable();
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -68,6 +68,7 @@ class _ReaderPageState extends State<ReaderPage> {
       setting = Provider.of<ReaderSettingModel>(context);
       SplitUtil.init(setting!);
     }
+
     /// 初始化当前书对象
     if (readerData == null) {
       // print('readerData == null');
@@ -79,6 +80,7 @@ class _ReaderPageState extends State<ReaderPage> {
       body: Container(
         width: 100.vw,
         height: 1334.h,
+
         ///FIXME: 间距,需要读取阅读设置
         child: Stack(
           children: [

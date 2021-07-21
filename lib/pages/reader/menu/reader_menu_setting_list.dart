@@ -18,9 +18,14 @@ class _ReaderMenuSettingListState extends State<ReaderMenuSettingList> {
   @override
   Widget build(BuildContext context) {
     var _default = Expanded(
-      child: _btn(0xe7eb, size: 17.vw, text: "其他设置", onPressed: () {
-        ReaderMenu.setShowType(MenuShowType.font);
-      }),
+      child: _btn(
+        const IconData(0xe7eb, fontFamily: "iconfont"),
+        size: 17.vw,
+        text: "其他设置",
+        onPressed: () {
+          ReaderMenu.setShowType(MenuShowType.font);
+        },
+      ),
     );
     return Container(
       child: ReaderMenuContainer(
@@ -29,34 +34,59 @@ class _ReaderMenuSettingListState extends State<ReaderMenuSettingList> {
             Row(
               children: [
                 Expanded(
-                  child: _btn(0xe61d, size: 17.vw, text: "字体", onPressed: () {
-                    ReaderMenu.setShowType(MenuShowType.font);
-                  }),
+                  child: _btn(
+                    const IconData(0xe61d, fontFamily: "iconfont"),
+                    size: 17.vw,
+                    text: "字体",
+                    onPressed: () {
+                      ReaderMenu.setShowType(MenuShowType.font);
+                    },
+                  ),
                 ),
                 Expanded(
-                  child: _btn(0xe61c, size: 17.vw, text: "颜色", onPressed: () {
-                    ReaderMenu.setShowType(MenuShowType.color);
-                  }),
+                  child: _btn(
+                    const IconData(0xe61c, fontFamily: "iconfont"),
+                    size: 17.vw,
+                    text: "颜色",
+                    onPressed: () {
+                      ReaderMenu.setShowType(MenuShowType.color);
+                    },
+                  ),
                 ),
                 Expanded(
-                  child: _btn(0xe61c, size: 17.vw, text: "布局", onPressed: () {
-                    ReaderMenu.setShowType(MenuShowType.layout);
-                  }),
+                  child: _btn(
+                    const IconData(0xe61c, fontFamily: "iconfont"),
+                    size: 17.vw,
+                    text: "布局",
+                    onPressed: () {
+                      ReaderMenu.setShowType(MenuShowType.layout);
+                    },
+                  ),
                 ),
                 Expanded(
-                  child: _btn(0xe7eb, size: 17.vw, text: "横屏", onPressed: () {
-                    print("横屏");
-                    NovelUtil.msg('暂不支持');
-                  }),
+                  child: _btn(
+                    const IconData(0xe7eb, fontFamily: "iconfont"),
+                    size: 17.vw,
+                    text: "横屏",
+                    onPressed: () {
+                      print("横屏");
+                      NovelUtil.msg('暂不支持');
+                    },
+                  ),
                 ),
               ],
             ),
             Row(
               children: [
                 Expanded(
-                  child: _btn(0xe613, size: 17.vw, text: "翻页动画", onPressed: () {
-                    ReaderMenu.setShowType(MenuShowType.turnAnimation);
-                  }),
+                  child: _btn(
+                    const IconData(0xe613, fontFamily: "iconfont"),
+                    size: 17.vw,
+                    text: "翻页动画",
+                    onPressed: () {
+                      ReaderMenu.setShowType(MenuShowType.turnAnimation);
+                    },
+                  ),
                 ),
                 _default,
                 _default,
@@ -78,7 +108,7 @@ class _ReaderMenuSettingListState extends State<ReaderMenuSettingList> {
   }
 
   Widget _btn(
-    int codePoint, {
+    IconData iconData, {
     VoidCallback? onPressed,
     String? text,
     double size = 50,
@@ -101,7 +131,7 @@ class _ReaderMenuSettingListState extends State<ReaderMenuSettingList> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
-                  IconData(codePoint, fontFamily: "iconfont"),
+                  iconData,
                   color: Color(0xFFDDDDDD),
                   size: iconSize,
                 ),
