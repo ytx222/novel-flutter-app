@@ -89,8 +89,8 @@ Future<List<FileItem>> getDirChild(String path) async {
   print(directory);
   int t = DateTime.now().millisecondsSinceEpoch;
   try {
-    var entitys = await directory.list().toList();
-    List<FileItem> list = entitys.map<FileItem>((item) {
+    var entityList = await directory.list().toList();
+    List<FileItem> list = entityList.map<FileItem>((item) {
       return FileItem(item).initInfo();
     }).toList();
     // print(Timeline.now);
@@ -279,7 +279,7 @@ Future sendReceive(SendPort sendPort, List<dynamic> parms) {
 /// -1 = 永久拒绝
 Future<int> getPermission() async {
   print("获取文件权限");
-  var status = await Permission.storage.status;
+  var status = await Permission.manageExternalStorage.status;
   _pr(status);
   // 永久拒绝直接返回-1
   if (status.isPermanentlyDenied) {
@@ -292,7 +292,7 @@ Future<int> getPermission() async {
   // 申请权限
   if (status.isDenied) {
     print("权限拒绝或未确认");
-    PermissionStatus status2 = await Permission.storage.request();
+    PermissionStatus status2 = await Permission.manageExternalStorage.request();
     print("status2=$status2");
     if (status2.isGranted) {
       return 1;

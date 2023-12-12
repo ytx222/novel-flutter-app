@@ -1,0 +1,4 @@
+<!-- res/values-night/strings.xml -->
+<resources>
+    <string name="app_name">novel_app_night</string>
+</resources>

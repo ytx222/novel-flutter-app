@@ -1,19 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ytx222.novel_app">
+    package="com.ytx222.novel_app3">
 	<!-- 权限配置 -->
 	<!-- 网络权限,可给可不给 -->
 	<uses-permission android:name="android.permission.INTERNET" />
     <!-- 文件权限 写外部存储器 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 	<!-- 保存屏幕常亮 -->
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<!-- FIXME: android:requestLegacyExternalStorage 这个是临时加的,用于读取权限bug修复 -->
 
+<!-- android:label="novel_app" -->
    <application
     	android:requestLegacyExternalStorage="true"
-        android:label="novel_app"
-        android:icon="@mipmap/icon">
+        android:icon="@mipmap/icon"
+         android:label="@string/app_name"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:replace="label">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

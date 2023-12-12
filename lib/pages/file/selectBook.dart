@@ -297,8 +297,8 @@ class __FileListWidgetState extends State<_FileListWidget> {
     if (fullListPath == path) {
       list = <FileItem>[]..addAll(fullList);
     } else {
-      list = await getDirChild(rootPath + path);
       print('getDirChild============ "${rootPath + path}"');
+      list = await getDirChild(rootPath + path);
       print(list);
       fullListPath = path;
       fullList = <FileItem>[]..addAll(list);

@@ -75,7 +75,7 @@ class SimulationAnimationPageState extends HorizontalTurnAnimationPageState {
   @override
   void initState() {
     super.initState();
-    baseDuration = Duration(milliseconds: 500*5);
+    baseDuration = Duration(milliseconds: 500 * 1);
   }
 
   /// 屏幕大小

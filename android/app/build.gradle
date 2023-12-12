@@ -25,13 +25,13 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     defaultConfig {
         // 指定您自己唯一的应用程序ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.ytx222.novel_app"
+        applicationId "com.ytx222.novel_app3"
         minSdkVersion 18
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -41,6 +41,10 @@ android {
             // TODO: 为发布版本添加您自己的签名配置。
             // 现在使用调试键签名，因此“flutter run --release”可以工作。
             signingConfig signingConfigs.debug
+            // resValue "string", "app_name", "novel_app"
+        }
+          debug {
+            // resValue "string", "app_name", "novel_debug"
         }
     }
 }

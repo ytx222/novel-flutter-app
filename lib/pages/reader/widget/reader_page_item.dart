@@ -34,8 +34,12 @@ class ReaderPageItem extends StatelessWidget {
     color: Color(0xFF444444),
   );
 
+  static var hideButton = false;
+
+
   @override
   Widget build(BuildContext context) {
+
     print("ReaderPageItem build");
     //FIXME: 考虑将setting在其他地方统一分配好,直接使用
     // 可能不太现实
@@ -96,8 +100,9 @@ class ReaderPageItem extends StatelessWidget {
             },
           ),
           testButton(
-            top: 140,
-            text: '调试原生专用',
+            // top: 180.w,
+            left: 160.w,
+            text: '调试原生专用2',
             onPressed: () {
               print("按钮被点击222");
 
@@ -105,7 +110,9 @@ class ReaderPageItem extends StatelessWidget {
             },
           ),
           testButton(
-            top: 230,
+            // top: 230.w,
+            left: 280.w,
+            width: 60.w,
             text: '调试数据专用',
             onPressed: () {
               var readerData =
@@ -116,22 +123,39 @@ class ReaderPageItem extends StatelessWidget {
               print(c.pages[0].sectionList[1].text);
             },
           ),
+
+          testButton(
+            top: 160.w,
+            // left: 280.w,
+            width: 160.w,
+            text: '隐藏按钮',
+            onPressed: () {
+              hideButton = true;
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget testButton({
-    double top = 50,
-    String text = "按钮",
-    double height = 60,
-    double opacity = 0.5,
-    VoidCallback? onPressed,
-  }) {
+  Widget testButton(
+      {double top = 0,
+      double left = 0,
+      String text = "按钮",
+      double width = 0,
+      double height = 0,
+      double opacity = 0.5,
+      VoidCallback? onPressed,
+      double fontSize = 0}) {
+    height = height == 0 ? 60.w : height;
+    top = top == 0 ? 80.w : top;
+    width = width == 0 ? 100.w : width;
+    fontSize = fontSize == 0 ? 24.w : fontSize;
+    left = left == 0 ? 50.w : left;
     return Positioned(
-      top: top,
-      left: 30.w,
-      width: 300.w,
+      top: hideButton ? -99.w : top,
+      left: left,
+      width: width,
       height: height,
       child: Opacity(
         opacity: 1,
@@ -150,7 +174,7 @@ class ReaderPageItem extends StatelessWidget {
           child: Text(
             text,
             style: TextStyle(
-              fontSize: 30.w,
+              fontSize: fontSize,
               color: Colors.white,
               // background: Paint()..color=Colors.black
             ),

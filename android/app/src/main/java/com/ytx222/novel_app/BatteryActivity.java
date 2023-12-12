@@ -1,4 +1,4 @@
-package com.ytx222.novel_app;
+package com.ytx222.novel_app3;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -70,7 +70,7 @@ public class BatteryActivity extends FlutterActivity {
 //		};
 		// initFlutterApi();
 		channel = new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(),
-				"com.ytx222.novel_app.api");
+				"com.ytx222.novel_app3.api");
 //		channel.setMethodCallHandler(mch);
 		///
 		mFilter = new IntentFilter();

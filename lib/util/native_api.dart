@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 class NativeApi {
   /// 通道
   /// FIXME:
-  static const platform = const MethodChannel('com.ytx222.novel_app.api');
+  static const platform = const MethodChannel('com.ytx222.novel_app3.api');
   // Get battery level.
   /// 获取电池电量,亲测成功
   static Future<int> getBatteryLevel() async {

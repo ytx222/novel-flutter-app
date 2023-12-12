@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ytx222.novel_app">
+    package="com.ytx222.novel_app3">
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
@@ -9,4 +9,6 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	<!-- 保存屏幕常亮 -->
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<!-- <application android:label="novel_app" >
+	</application> -->
 </manifest>

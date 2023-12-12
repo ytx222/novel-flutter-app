@@ -197,8 +197,9 @@ class _ReaderMenuColorLayoutngState extends State<ReaderMenuLayoutSetting> {
           sizeBtn(
             const IconData(0xe663, fontFamily: "iconfont"),
             callback: () {
-              if (size + 1 > 240) {
-                NovelUtil.msg('间距上限为240');
+              const max = 600;
+              if (size + 1 > max) {
+                NovelUtil.msg('间距上限为${max}');
                 return true;
               }
               var newValue = 1.w * ++size;

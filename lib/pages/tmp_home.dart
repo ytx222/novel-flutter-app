@@ -33,11 +33,16 @@ class _TempHomePageState extends State<TempHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // ScreenUtil.init(
+    //   BoxConstraints(
+    //     maxHeight: MediaQuery.of(context).size.height,
+    //     maxWidth: MediaQuery.of(context).size.width,
+    //   ),
+    //   designSize: Size(750, 1334),
+    //   // allowFontScaling: false,
+    // );
     ScreenUtil.init(
-      BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height,
-        maxWidth: MediaQuery.of(context).size.width,
-      ),
+      context,
       designSize: Size(750, 1334),
       // allowFontScaling: false,
     );
